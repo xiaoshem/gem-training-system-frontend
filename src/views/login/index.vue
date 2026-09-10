@@ -346,12 +346,12 @@ $light_gray: #eee;
     bottom: 20px;
     width: 100%;
     text-align: center;
-    
+
     a {
       color: $dark_gray;
       font-size: 12px;
       text-decoration: none;
-      
+
       &:hover {
         color: $light_gray;
         text-decoration: underline;
