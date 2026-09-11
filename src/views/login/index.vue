@@ -17,7 +17,8 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">登录</h3>
+        <h3 class="title">人工宝石培训与技能认证系统</h3>
+        <p class="subtitle">账号登录</p>
       </div>
 
       <el-form-item prop="username">
@@ -311,9 +312,15 @@ $light_gray: #eee;
     .title {
       font-size: 26px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 0 auto 10px;
       text-align: center;
       font-weight: bold;
+    }
+
+    .subtitle {
+      margin: 0 auto 32px;
+      color: $dark_gray;
+      text-align: center;
     }
   }
 

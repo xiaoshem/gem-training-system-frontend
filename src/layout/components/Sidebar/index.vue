@@ -37,22 +37,20 @@ export default {
     ...mapGetters(['sidebar']),
     routes() {
       const menuList = this.$router.options.routes
-
       const roleKey = sessionStorage.getItem('roles')
 
-      menuList.forEach((element) => {
-        if (element.meta && element.meta.roles) {
-          let isVisible = false
-          element.meta.roles.forEach((role) => {
-            if (role.startsWith(roleKey)) {
-              isVisible = true
-              // 一旦找到匹配项，可以提前结束循环，无需继续检查其他项
-              return
-            }
-          })
-          element.meta.visible = isVisible
-        }
-      })
+      const updateVisibility = (routes) => {
+        routes.forEach((route) => {
+          if (route.meta && route.meta.roles) {
+            route.meta.visible = route.meta.roles.includes(roleKey)
+          }
+          if (route.children) {
+            updateVisibility(route.children)
+          }
+        })
+      }
+
+      updateVisibility(menuList)
       return menuList
     },
     activeMenu() {
