@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: process.env.VUE_APP_TITLE || '校园在线考试系统',
+  title: process.env.VUE_APP_TITLE || '人工宝石产业人才培训与技能认证管理系统',
 
   /**
    * @type {boolean} true | false

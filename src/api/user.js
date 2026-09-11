@@ -77,6 +77,14 @@ export function changePassword(data) {
   })
 }
 
+export function updateProfile(data) {
+  return request({
+    url: 'user/profile',
+    method: 'put',
+    data
+  })
+}
+
 export function userAddClass(params) {
   return request({
     url: 'user/grade/join',

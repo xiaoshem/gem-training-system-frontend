@@ -63,7 +63,8 @@ const actions = {
             setRole('teacher')
           } else if (roleId === 3) {
             setRole('admin')
-
+          } else if (roleId === 4) {
+            setRole('auditor')
           }
           // 建立websocket连接
           connectWebSocket()

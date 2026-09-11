@@ -28,11 +28,15 @@
       </el-table-column>
       <el-table-column prop="userName" label="用户名" align="center" />
       <el-table-column prop="realName" label="真实姓名" align="center" />
+      <el-table-column prop="organization" label="所在单位" align="center" show-overflow-tooltip />
+      <el-table-column prop="position" label="岗位" align="center" show-overflow-tooltip />
+      <el-table-column prop="phone" label="联系电话" align="center" width="130" />
       <el-table-column prop="roleId" label="角色名称" align="center" >
       <template slot-scope="{ row }">
-        <span v-if="row.roleId == 1">学生</span>
-        <span v-if="row.roleId == 2">教师</span>
+        <span v-if="row.roleId == 1">学员</span>
+        <span v-if="row.roleId == 2">培训讲师</span>
         <span v-if="row.roleId == 3">管理员</span>
+        <span v-if="row.roleId == 4">认证审核员</span>
       </template>
       </el-table-column>
       <el-table-column prop="gradeName" label="班级" align="center" />
@@ -48,7 +52,7 @@
     </el-table>
 
     <!-- 新增弹窗 -->
-    <el-dialog title="新增用户" :visible.sync="addUserDiologVisible">
+    <el-dialog title="新增用户（默认密码：123456）" width="720px" :visible.sync="addUserDiologVisible">
       <el-form :model="addForm">
       <el-row>
         <el-col :span="11">
@@ -64,20 +68,44 @@
       </el-row>
       <el-row>
         <el-col :span="11">
-          <el-form-item label="身份选择" :label-width="formLabelWidth" v-if="role == 'admin'" >
+          <el-form-item label="所在单位" :label-width="formLabelWidth">
+            <el-input v-model="addForm.organization" autocomplete="off" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="岗位" :label-width="formLabelWidth">
+            <el-input v-model="addForm.position" autocomplete="off" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="11">
+          <el-form-item label="身份证号" :label-width="formLabelWidth">
+            <el-input v-model="addForm.idCard" maxlength="18" autocomplete="off" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="11">
+          <el-form-item label="联系电话" :label-width="formLabelWidth">
+            <el-input v-model="addForm.phone" maxlength="11" autocomplete="off" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="11">
+          <el-form-item v-if="role == 'admin'" label="身份选择" :label-width="formLabelWidth">
             <el-select v-model="addForm.roleId" placeholder="请选择身份">
-              <el-option label="学生" value="1" />
-              <el-option label="教师" value="2" />
+              <el-option label="学员" :value="1" />
+              <el-option label="培训讲师" :value="2" />
+              <el-option label="认证审核员" :value="4" />
             </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="班级选择" :label-width="formLabelWidth" v-if="role == 'teacher' || (role == 'admin' && addForm.roleId == '1')" >
+          <el-form-item v-if="role == 'teacher' || (role == 'admin' && addForm.roleId === 1)" label="班级选择" :label-width="formLabelWidth">
             <ClassSelect v-model="addForm.gradeId" :is-multiple="false" />
           </el-form-item>
         </el-col>
       </el-row>
-    </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="addUserDiologVisible = false">取 消</el-button>
@@ -134,6 +162,10 @@ export default {
       addForm: {
         userName: '',
         realName: '',
+        idCard: '',
+        organization: '',
+        position: '',
+        phone: '',
         roleId: '',
         gradeId: ''
       },
@@ -187,9 +219,29 @@ export default {
     },
     // 添加用户逻辑
     addUser() {
+      if (!this.addForm.userName.trim() || !this.addForm.realName.trim()) {
+        this.$message.warning('请填写用户名和真实姓名')
+        return
+      }
+      if (this.role === 'admin' && !this.addForm.roleId) {
+        this.$message.warning('请选择用户身份')
+        return
+      }
+      if (this.addForm.idCard && !/^\d{17}[0-9Xx]$/.test(this.addForm.idCard)) {
+        this.$message.warning('请输入正确的18位身份证号')
+        return
+      }
+      if (this.addForm.phone && !/^1\d{10}$/.test(this.addForm.phone)) {
+        this.$message.warning('请输入正确的11位手机号')
+        return
+      }
       const data = {
         userName: this.addForm.userName,
         realName: this.addForm.realName,
+        idCard: this.addForm.idCard,
+        organization: this.addForm.organization,
+        position: this.addForm.position,
+        phone: this.addForm.phone,
         roleId: this.addForm.roleId,
         gradeId: this.addForm.gradeId
       }
@@ -198,6 +250,10 @@ export default {
           // 清空新增用户表单
           this.addForm.userName = ''
           this.addForm.realName = ''
+          this.addForm.idCard = ''
+          this.addForm.organization = ''
+          this.addForm.position = ''
+          this.addForm.phone = ''
           this.addForm.roleId = ''
           this.addForm.gradeId = ''
           // 刷新页面数据

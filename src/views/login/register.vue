@@ -17,7 +17,8 @@
       label-position="left"
     >
       <div class="title-container">
-        <h3 class="title">注册</h3>
+        <h3 class="title">人工宝石培训与技能认证系统</h3>
+        <p class="subtitle">学员账号注册</p>
       </div>
 
       <el-form-item prop="userName">
@@ -46,6 +47,54 @@
           type="text"
           tabindex="2"
           auto-complete="on"
+        />
+      </el-form-item>
+      <el-form-item prop="idCard">
+        <span class="svg-container">
+          <i class="el-icon-postcard" />
+        </span>
+        <el-input
+          v-model="registerForm.idCard"
+          placeholder="身份证号（选填）"
+          name="idCard"
+          type="text"
+          auto-complete="off"
+        />
+      </el-form-item>
+      <el-form-item prop="organization">
+        <span class="svg-container">
+          <i class="el-icon-office-building" />
+        </span>
+        <el-input
+          v-model="registerForm.organization"
+          placeholder="所在企业或单位（选填）"
+          name="organization"
+          type="text"
+          auto-complete="off"
+        />
+      </el-form-item>
+      <el-form-item prop="position">
+        <span class="svg-container">
+          <i class="el-icon-suitcase" />
+        </span>
+        <el-input
+          v-model="registerForm.position"
+          placeholder="岗位（选填）"
+          name="position"
+          type="text"
+          auto-complete="off"
+        />
+      </el-form-item>
+      <el-form-item prop="phone">
+        <span class="svg-container">
+          <i class="el-icon-mobile-phone" />
+        </span>
+        <el-input
+          v-model="registerForm.phone"
+          placeholder="联系电话（选填）"
+          name="phone"
+          type="text"
+          auto-complete="off"
         />
       </el-form-item>
       <el-form-item prop="password">
@@ -168,7 +217,7 @@ export default {
       }
     }
     const validateCheckedPassword = (rule, value, callback) => {
-      if (value  != this.registerForm.password) {
+      if (value !== this.registerForm.password) {
         callback(new Error('两次输入密码不一致'))
       } else {
         callback()
@@ -181,6 +230,20 @@ export default {
         callback()
       }
     }
+    const validateIdCard = (rule, value, callback) => {
+      if (value && !/^\d{17}[0-9Xx]$/.test(value)) {
+        callback(new Error('请输入正确的18位身份证号'))
+      } else {
+        callback()
+      }
+    }
+    const validatePhone = (rule, value, callback) => {
+      if (value && !/^1\d{10}$/.test(value)) {
+        callback(new Error('请输入正确的11位手机号'))
+      } else {
+        callback()
+      }
+    }
     return {
       icpNumber: process.env.VUE_APP_ICP_NUMBER,
       icpLink: process.env.VUE_APP_ICP_LINK,
@@ -188,6 +251,10 @@ export default {
         userName: '',
         password: '',
         realName: '',
+        idCard: '',
+        organization: '',
+        position: '',
+        phone: '',
         checkedPassword: '',
         code: ''
       },
@@ -195,6 +262,10 @@ export default {
         userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
         realName: [{ required: true, trigger: 'blur', validator: validateRealName }],
+        idCard: [{ trigger: 'blur', validator: validateIdCard }],
+        organization: [{ max: 150, message: '所在企业或单位不能超过150个字符', trigger: 'blur' }],
+        position: [{ max: 100, message: '岗位不能超过100个字符', trigger: 'blur' }],
+        phone: [{ trigger: 'blur', validator: validatePhone }],
         checkedPassword: [{ required: true, trigger: 'blur', validator: validateCheckedPassword }],
         code: [{ required: true, trigger: 'blur', validator: validateCode }]
       },
@@ -224,6 +295,10 @@ export default {
               const registerData = {
                 userName: this.registerForm.userName,
                 realName: this.registerForm.realName,
+                idCard: this.registerForm.idCard,
+                organization: this.registerForm.organization,
+                position: this.registerForm.position,
+                phone: this.registerForm.phone,
                 password: Encrypt(this.registerForm.password),
                 checkedPassword: Encrypt(this.registerForm.checkedPassword)
               }
@@ -323,7 +398,7 @@ $light_gray: #eee;
   min-height: 100%;
   width: 100%;
   background-color: $bg;
-  overflow: hidden;
+  overflow-y: auto;
   .el-input {
     display: inline-block;
     height: 47px;
@@ -357,9 +432,9 @@ $light_gray: #eee;
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 28px 35px 36px;
     margin: 0 auto;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .tips {
@@ -386,11 +461,17 @@ $light_gray: #eee;
     position: relative;
 
     .title {
-      font-size: 26px;
+      font-size: 24px;
       color: $light_gray;
-      margin: 0px auto 40px auto;
+      margin: 0 auto 8px;
       text-align: center;
       font-weight: bold;
+    }
+
+    .subtitle {
+      margin: 0 auto 24px;
+      color: $dark_gray;
+      text-align: center;
     }
   }
 

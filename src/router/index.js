@@ -79,7 +79,7 @@ export const constantRoutes = [
       name: 'myself',
       hidden: true,
       component: () => import('@/views/user/myself'),
-      meta: { title: '个人中心', visible: true, roles: ['teacher', 'admin', 'student'], icon: 'dashboard' }
+      meta: { title: '个人中心', visible: true, roles: ['teacher', 'admin', 'student', 'auditor'], icon: 'dashboard' }
     }]
   },
   {
@@ -90,7 +90,7 @@ export const constantRoutes = [
       name: 'change-password',
       hidden: true,
       component: () => import('@/views/user/updatePassword.vue'),
-      meta: { title: '修改密码', visible: true, roles: ['teacher', 'admin', 'student'], icon: 'dashboard' }
+      meta: { title: '修改密码', visible: true, roles: ['teacher', 'admin', 'student', 'auditor'], icon: 'dashboard' }
     }]
   },
   {

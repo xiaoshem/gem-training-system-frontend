@@ -18,11 +18,14 @@ router.beforeEach(async(to, from, next) => {
   // set page title
   document.title = getPageTitle(to.meta.title)
 
-  // determine whether the user has logged in
-  // const hasToken = getToken()
-  if (to.path === '/login' || to.path === '/') {
-    next()
-  } else {
+  const requiredRoles = to.meta && to.meta.roles
+  const currentRole = sessionStorage.getItem('roles')
+  if (requiredRoles && !requiredRoles.includes(currentRole)) {
+    next('/404')
+    return
+  }
+
+  if (!['/login', '/register', '/'].includes(to.path)) {
     store.commit('menu/ADD_TAG', {
       path: to.path,
       checked: false,
