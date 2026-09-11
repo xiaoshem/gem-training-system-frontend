@@ -44,7 +44,7 @@ const whiteList = ['/login', '/register']
 
 // 判断是否有token，如果有token，则允许访问，否则跳转到登录页面
 router.beforeEach((to, from, next) => {
-  // 获取token，这里以从localStorage获取为例
+  // 获取token，这里以从sessionStorage获取为例
   const token = getToken('Authorization')
 
   // 检查当前访问的路由是否在白名单内

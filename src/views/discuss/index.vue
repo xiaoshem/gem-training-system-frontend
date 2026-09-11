@@ -134,7 +134,7 @@ export default {
   },
   created() {
 
-    this.currentRole =  localStorage.getItem('roles')
+    this.currentRole =  sessionStorage.getItem('roles')
     this.getDiscussionPage();
   },
   methods: {

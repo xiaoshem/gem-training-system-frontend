@@ -1,67 +1,68 @@
-import Cookies from 'js-cookie'
-
 const TokenKey = 'Authorization'
 const UserIdKey = 'class_activity_system_user_id'
-const roleKey = 'class_activity_system_role'
+const roleKey = 'roles'
 const discussionKey = 'class_activity_system_discussion_id'
 const gradeKey = 'class_activity_system_grade_id'
 
 export function getToken() {
-  return Cookies.get(TokenKey)
+  return sessionStorage.getItem(TokenKey)
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  const normalizedToken = token && token.startsWith('Bearer ')
+    ? token.substring(7)
+    : token
+  return sessionStorage.setItem(TokenKey, normalizedToken)
 }
 
 export function removeToken() {
-  return Cookies.remove(TokenKey)
+  return sessionStorage.removeItem(TokenKey)
 }
 
 
 export function getUserId() {
-  return localStorage.getItem(UserIdKey)
+  return sessionStorage.getItem(UserIdKey)
 }
 export function setUserId(userId) {
-  return localStorage.setItem(UserIdKey, userId)
+  return sessionStorage.setItem(UserIdKey, userId)
 }
 
 export function removeUserId() {
-  return localStorage.removeItem(UserIdKey)
+  return sessionStorage.removeItem(UserIdKey)
 }
 
 export function getRole() {
-  return localStorage.getItem(roleKey)
+  return sessionStorage.getItem(roleKey)
 }
 
 export function setRole(role) {
-  return localStorage.setItem(roleKey, role)
+  return sessionStorage.setItem(roleKey, role)
 }
 
 export function removeRole() {
-  return localStorage.removeItem(roleKey)
+  return sessionStorage.removeItem(roleKey)
 }
 
 export function getDiscussionId() {
-  return localStorage.getItem(discussionKey)
+  return sessionStorage.getItem(discussionKey)
 }
 
 export function setDiscussionId(id) {
-  return localStorage.setItem(discussionKey, id)
+  return sessionStorage.setItem(discussionKey, id)
 }
 
 export function removeDiscussionId() {
-  return localStorage.removeItem(discussionKey)
+  return sessionStorage.removeItem(discussionKey)
 }
 
 export function getGradeId() {
-  return localStorage.getItem(gradeKey)
+  return sessionStorage.getItem(gradeKey)
 }
 
 export function setGradeId(id) {
-  return localStorage.setItem(gradeKey, id)
+  return sessionStorage.setItem(gradeKey, id)
 }
 
 export function removeGradeId() {
-  return localStorage.removeItem(gradeKey)
+  return sessionStorage.removeItem(gradeKey)
 }

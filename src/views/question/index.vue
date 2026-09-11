@@ -258,7 +258,7 @@ export default {
       // 这里可以进一步处理repo对象，比如更新UI或发送网络请求等
     },
     updateRow(row) {
-      localStorage.setItem('quId', row.id)
+      sessionStorage.setItem('quId', row.id)
       this.$router.push({ name: 'questions-add' })
     },
     importQu() {

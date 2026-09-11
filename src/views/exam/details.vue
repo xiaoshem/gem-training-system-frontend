@@ -3,6 +3,35 @@
     <el-container>
       <el-main class="right">
         <el-col>
+          <el-card v-if="examInfo" class="exam-summary">
+            <div slot="header" class="summary-title">考试基本信息</div>
+            <div class="summary-grid">
+              <div class="summary-item">
+                <span class="summary-label">考试名称</span>
+                <span>{{ examInfo.title }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">试卷总分</span>
+                <span>{{ examInfo.grossScore }} 分</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">及格分数</span>
+                <span>{{ examInfo.passedScore }} 分</span>
+              </div>
+              <div class="summary-item summary-time">
+                <span class="summary-label">考试时间</span>
+                <span>{{ examTimeText }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">考试时长</span>
+                <span>{{ examInfo.examDuration }} 分钟</span>
+              </div>
+              <div class="summary-item summary-classes">
+                <span class="summary-label">发布班级</span>
+                <span>{{ gradeNamesText }}</span>
+              </div>
+            </div>
+          </el-card>
           <el-card class="qu_list">
             <div>
               <!-- eslint-disable-next-line vue/no-template-shadow -->
@@ -168,8 +197,7 @@
 </template>
 
 <script>
-import { recordExamDetail } from "@/api/record";
-import {details} from "@/api/exam"
+import { details, getExamDetail } from "@/api/exam";
 export default {
   name: "ExamProcess",
   data() {
@@ -177,18 +205,33 @@ export default {
       input: "",
       quIndex: -1,
       examId: 0,
-      data: null,
+      data: [],
+      examInfo: null,
       userId: null,
       index: {
         quType: 4, // 确保这里有一个值
       },
-      examId:"",
     };
   },
   created() {
-    console.log("this.$route.query", this.$route.query.examId);
-    this.examId = localStorage.getItem("exam-details-examId")
+    this.examId = sessionStorage.getItem("exam-details-examId")
     this.ExamDetail();
+  },
+  computed: {
+    examTimeText() {
+      if (!this.examInfo) {
+        return ''
+      }
+      const startTime = this.examInfo.startTime || '未设置'
+      const endTime = this.examInfo.endTime || '未设置'
+      return `${startTime} 至 ${endTime}`
+    },
+    gradeNamesText() {
+      if (!this.examInfo || !this.examInfo.gradeNames || this.examInfo.gradeNames.length === 0) {
+        return '暂无发布班级'
+      }
+      return this.examInfo.gradeNames.join('、')
+    }
   },
   methods: {
     isCheck(myOption, sort) {
@@ -232,8 +275,12 @@ export default {
     },
     // 分页查询
     async ExamDetail() {
-      const res = await details(this.examId);
-      this.data = res.data;
+      const [questionRes, infoRes] = await Promise.all([
+        details(this.examId),
+        getExamDetail(this.examId)
+      ]);
+      this.data = questionRes.data || [];
+      this.examInfo = infoRes.data;
     },
     // 点击答题卡题号, 右侧题目滑动
     handleTag(index) {
@@ -299,6 +346,34 @@ export default {
 .type_tag {
   margin-right: 5px;
   margin-top: 10px;
+}
+
+.exam-summary {
+  margin-bottom: 20px;
+}
+.summary-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+}
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 18px 24px;
+}
+.summary-item {
+  display: flex;
+  line-height: 24px;
+  color: #303133;
+}
+.summary-label {
+  min-width: 82px;
+  margin-right: 12px;
+  color: #909399;
+}
+.summary-time,
+.summary-classes {
+  grid-column: span 2;
 }
 
 // 试题内容样式

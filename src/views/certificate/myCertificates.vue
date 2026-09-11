@@ -113,8 +113,8 @@ export default {
       pageSize: 10,
       data: {},
       // 从本地缓存中获得当前登录账号和等级
-      userName: localStorage.getItem('username'),
-      level: localStorage.getItem('level'),
+      userName: sessionStorage.getItem('username'),
+      level: sessionStorage.getItem('level'),
       // 获取当前日期
       start: '',
       dialogVisible: false,

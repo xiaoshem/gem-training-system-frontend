@@ -114,7 +114,7 @@ export default {
       },
       cancle() {},
       updateRow(row) {
-        localStorage.setItem('record_exercise_repoId', row.id)
+        sessionStorage.setItem('record_exercise_repoId', row.id)
         this.$router.push({ name: 'exercise-record-detail', query: { zhi: row }})
         // this.dialogFormVisible = true;
         // this.form = row;

@@ -198,7 +198,7 @@ export default {
       console.log("单选题库变化:", repo);
     },
     updateRow(row) {
-      localStorage.setItem("quId", row.id);
+      sessionStorage.setItem("quId", row.id);
       this.$router.push({ name: "questions-add" });
     },
 

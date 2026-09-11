@@ -148,7 +148,7 @@ export default {
   },
   created() {
     // 获取用户角色
-    this.role = localStorage.getItem('roles')
+    this.role = sessionStorage.getItem('roles')
     // 获取分页数据
     this.getUserPage()
   },

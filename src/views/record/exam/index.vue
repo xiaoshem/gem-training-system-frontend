@@ -40,7 +40,8 @@
       <el-table-column prop="passedScore" align="center" label="及格分" />
       <el-table-column prop="userScore" align="center" label="用户成绩">
         <template slot-scope="scope">
-          <el-tooltip :content="scope.row.userScore >= scope.row.passedScore ? '及格' : '不及格'" placement="top">
+          <el-tag v-if="scope.row.whetherMark === 0" type="warning">待批改</el-tag>
+          <el-tooltip v-else :content="scope.row.userScore >= scope.row.passedScore ? '及格' : '不及格'" placement="top">
             <span
               :style="{
                 color: scope.row.userScore >= scope.row.passedScore ? '#67C23A' : '#F56C6C',
@@ -156,8 +157,11 @@ export default {
     },
 
     screenInfo(row) {
-      localStorage.setItem('record_exam_examId', row.id)
-      this.$router.push({ name: 'exam-record-detail', query: { zhi: row }})
+      sessionStorage.setItem('record_exam_examId', row.id)
+      this.$router.push({
+        name: 'exam-record-detail',
+        query: { examId: row.id }
+      })
     },
 
     handleSizeChange(val) {

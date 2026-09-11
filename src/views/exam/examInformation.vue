@@ -94,8 +94,8 @@ export default {
     }
   },
   created() {
-    this.receivedRow = localStorage.getItem('examInfo_examId')
-    this.getExamDetils(localStorage.getItem('examInfo_examId'))
+    this.receivedRow = sessionStorage.getItem('examInfo_examId')
+    this.getExamDetils(sessionStorage.getItem('examInfo_examId'))
   },
   methods: {
     // 分页查询
@@ -112,7 +112,7 @@ export default {
             path: this.$route.path,
             name: this.$route.name // 添加路由名称
           })
-          localStorage.setItem('examId', this.receivedRow)
+          sessionStorage.setItem('examId', this.receivedRow)
           this.$router.push({ name: 'start-exam', query: { zhi: this.receivedRow }})
         } else {
           this.$message({

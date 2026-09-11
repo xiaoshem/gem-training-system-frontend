@@ -168,7 +168,7 @@ export default {
       if (status.disabled) {
         return
       }
-      localStorage.setItem('examInfo_examId', row.id)
+      sessionStorage.setItem('examInfo_examId', row.id)
       this.$router.push({ name: 'prepare-exam', query: { zhi: row }})
     }
   }

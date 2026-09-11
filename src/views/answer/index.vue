@@ -161,7 +161,7 @@ export default {
       this.getAnswerPage(val, this.pageSize,this.searchTitle)
     },
     screenInfo(row) {
-      localStorage.setItem('answer_examId', row.examId)
+      sessionStorage.setItem('answer_examId', row.examId)
       this.$router.push({ name: 'answer-show', query: { zhi: row }})
     }
     // open(index) {

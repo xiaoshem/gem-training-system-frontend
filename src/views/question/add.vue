@@ -122,7 +122,7 @@
         :border="true"
         style="width: 90%; margin-top: 30px"
       >
-        <el-table-column label="答案内容">
+        <el-table-column label="参考答案">
           <template v-slot="scope">
             <el-input v-model="scope.row.content" type="textarea" />
           </template>
@@ -200,13 +200,13 @@ export default {
       this.fetchData(id)
     }
     // 编辑试题初始化
-    this.quId = localStorage.getItem('quId')
+    this.quId = sessionStorage.getItem('quId')
     if (this.quId) {
       this.getQuDetail()
     }
   },
   beforeDestroy() {
-    localStorage.removeItem('quId')
+    sessionStorage.removeItem('quId')
     this.postForm = {}
   },
   methods: {
@@ -308,6 +308,19 @@ export default {
             type: 'warning'
           })
 
+          return
+        }
+      }
+
+      if (this.postForm.quType === 4) {
+        const referenceAnswer = this.postForm.options && this.postForm.options[0]
+          ? this.postForm.options[0].content
+          : ''
+        if (!referenceAnswer || !referenceAnswer.trim()) {
+          this.$message({
+            message: '请填写简答题参考答案！',
+            type: 'warning'
+          })
           return
         }
       }

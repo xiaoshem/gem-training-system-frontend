@@ -54,7 +54,7 @@ export default {
   created() {
     this.menuList = routes.options.routes
 
-    this.roles = window.localStorage.getItem('roles')
+    this.roles = window.sessionStorage.getItem('roles')
 
     this.menuList.forEach((element) => {
       if (
@@ -63,7 +63,7 @@ export default {
         element.children[0].meta &&
         element.children[0].meta.roles
       ) {
-        const roleKey = localStorage.getItem('roles')
+        const roleKey = sessionStorage.getItem('roles')
         let isVisible = false
         element.children.forEach((item) => {
           item.meta.roles.forEach((role) => {

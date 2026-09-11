@@ -1,5 +1,5 @@
 import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken,setUserId,removeUserId,setRole,removeRole,setGradeId } from '@/utils/auth'
+import { getToken, setToken, removeToken, setUserId, removeUserId, setRole, removeRole, setGradeId, removeGradeId } from '@/utils/auth'
 
 import { resetRouter } from '@/router'
 import { parseJwt } from '@/utils/jwtUtils'
@@ -14,6 +14,17 @@ const getDefaultState = () => {
 }
 
 const state = getDefaultState()
+
+function clearLocalSession(commit) {
+  removeToken()
+  removeUserId()
+  removeRole()
+  removeGradeId()
+  sessionStorage.clear()
+  commit('RESET_STATE')
+  resetRouter()
+  disconnectWebSocket()
+}
 // const decode = () => {
 //   const token = getToken()
 //   const user = parseJwt(token)
@@ -46,14 +57,11 @@ const actions = {
           const roleId = JSON.parse(info.userInfo).roleId
           setUserId(user.id)
           if (roleId === 1) {
-            window.localStorage.setItem('roles', 'student')
             setRole('student')
             setGradeId(user.gradeId)
           } else if (roleId === 2) {
-            window.localStorage.setItem('roles', 'teacher')
             setRole('teacher')
           } else if (roleId === 3) {
-            window.localStorage.setItem('roles', 'admin')
             setRole('admin')
 
           }
@@ -95,31 +103,18 @@ const actions = {
   // reset token
   resetToken({ commit }) {
     return new Promise(resolve => {
-      removeToken() // 移除token
-      commit('RESET_STATE') // 重置状态
-      localStorage.removeItem('roles') // 移除角色信息
+      clearLocalSession(commit)
       resolve()
     })
   },
 
   // user logout
   logout({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove token first
-        resetRouter()
-
-        commit('RESET_STATE')
-        sessionStorage.clear()
-        localStorage.clear()
-        disconnectWebSocket()
-        resolve()
-        removeUserId()
-        removeRole()
-      }).catch(error => {
-        reject(error)
+    return logout(state.token)
+      .catch(() => undefined)
+      .then(() => {
+        clearLocalSession(commit)
       })
-    })
   }
 }
 
@@ -129,4 +124,3 @@ export default {
   mutations,
   actions
 }
-

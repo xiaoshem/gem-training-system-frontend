@@ -38,7 +38,7 @@ export default {
     routes() {
       const menuList = this.$router.options.routes
 
-      const roleKey = localStorage.getItem('roles')
+      const roleKey = sessionStorage.getItem('roles')
 
       menuList.forEach((element) => {
         if (element.meta && element.meta.roles) {

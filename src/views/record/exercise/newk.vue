@@ -154,7 +154,7 @@ export default {
   },
   created() {
     // this.examId=this.$route.query.zhi.examId
-    this.repoId = localStorage.getItem('record_exercise_repoId')
+    this.repoId = sessionStorage.getItem('record_exercise_repoId')
     this.ExerciseDetail()
   },
   methods: {

@@ -69,14 +69,21 @@
                         <div class="qu_content">
                           {{ indexx + 1 }}、{{ index.title }}
                         </div>
+                        <div class="score-summary">
+                          <span>本题满分：{{ index.fullScore }} 分</span>
+                          <span>本题得分：{{ scoreText(index) }}</span>
+                          <el-tag :type="resultTagType(index.resultStatus)" size="small">
+                            {{ resultStatusText(index.resultStatus) }}
+                          </el-tag>
+                        </div>
 
                         <!-- <div v-if="item.image != null && item.image != ''" style="clear: both">
                           <el-image :src="item.image" style="max-width: 200px" />
                         </div> -->
                       </div>
                       <div v-if="index.image != null && index.image != ''">
-                        <el-image :src="index.image" 
-                        :preview-src="[index.image]" 
+                        <el-image :src="index.image"
+                        :preview-src="[index.image]"
                          style="height: 100px" />
                       </div>
                       <!-- 选项 -->
@@ -112,14 +119,14 @@
                             >
                               <el-image
                                 :src="item.image"
-                                :preview-src="[item.image]" 
+                                :preview-src="[item.image]"
                                 style="max-width: 200px"
                               />
                             </div>
                             <div v-if="item.image != null && item.image != ''">
                               <el-image
                                 :src="item.image"
-                                :preview-src="[item.image]" 
+                                :preview-src="[item.image]"
                                 class="qu_choose_tag_img"
                               />
                             </div>
@@ -153,7 +160,7 @@
                 </div>
               </template>
               <!-- eslint-disable-next-line vue/no-template-shadow -->
-              <template v-for="index in data">
+              <template v-for="(index, indexx) in data">
                 <!-- eslint-disable-next-line vue/require-v-for-key -->
                 <div v-if="index.quType === 4" :class="'index' + index">
                   <el-row :gutter="24">
@@ -162,7 +169,14 @@
                       <div>
                         <!-- <div class="qu_num">{{ index }}</div> -->
                         <!-- 【 单选题 】 -->
-                        <div class="qu_content">{{ index.title }}</div>
+                        <div class="qu_content">{{ indexx + 1 }}、{{ index.title }}</div>
+                        <div class="score-summary">
+                          <span>本题满分：{{ index.fullScore }} 分</span>
+                          <span>本题得分：{{ scoreText(index) }}</span>
+                          <el-tag :type="resultTagType(index.resultStatus)" size="small">
+                            {{ resultStatusText(index.resultStatus) }}
+                          </el-tag>
+                        </div>
                       </div>
 
                       <!-- 选项 -->
@@ -238,14 +252,44 @@ export default {
     };
   },
   created() {
-    if (this.$route.query?.data?.type === 1) {
-      this.userId = this.$route.query.data.userId;
+    const query = this.$route.query || {};
+    this.userId = query.userId || null;
+    this.examId = query.examId || sessionStorage.getItem("record_exam_examId");
+
+    if (!this.examId) {
+      this.$message.error("缺少考试信息，请从考试记录页面重新进入");
+      return;
     }
-    // this.examId=this.$route.query.zhi.examId
-    this.examId = localStorage.getItem("record_exam_examId");
+
+    sessionStorage.setItem("record_exam_examId", this.examId);
     this.ExamDetail();
   },
   methods: {
+    scoreText(question) {
+      return question.earnedScore === null || question.earnedScore === undefined
+        ? '待批改'
+        : `${question.earnedScore} 分`
+    },
+    resultStatusText(status) {
+      const textMap = {
+        CORRECT: '正确',
+        WRONG: '错误',
+        PARTIAL: '部分得分',
+        PENDING: '待批改',
+        UNANSWERED: '未作答'
+      }
+      return textMap[status] || '未知'
+    },
+    resultTagType(status) {
+      const typeMap = {
+        CORRECT: 'success',
+        WRONG: 'danger',
+        PARTIAL: 'warning',
+        PENDING: 'info',
+        UNANSWERED: 'info'
+      }
+      return typeMap[status] || 'info'
+    },
     isCheck(myOption, sort) {
       const arr = myOption.split(",").map(Number); // 将字符串转换为数字数组
       if (arr.includes(sort)) {
@@ -380,6 +424,14 @@ export default {
 
   .qu_content {
     padding-left: 10px;
+  }
+
+  .score-summary {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin: 12px 0 4px 10px;
+    color: #606266;
   }
 
   // 选项组

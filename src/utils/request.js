@@ -12,6 +12,42 @@ const service = axios.create({
   crossDomain: true
 })
 
+let handlingUnauthorized = false
+
+function handleUnauthorized() {
+  if (handlingUnauthorized) {
+    return
+  }
+  handlingUnauthorized = true
+
+  const redirect = router.currentRoute.path === '/login'
+    ? null
+    : router.currentRoute.fullPath
+
+  store.dispatch('user/resetToken')
+    .catch(() => {})
+    .then(() => {
+      Message.closeAll()
+      Message({
+        message: '登录已过期，请重新登录',
+        type: 'error',
+        duration: 5 * 1000
+      })
+
+      if (router.currentRoute.path !== '/login') {
+        return router.replace({
+          path: '/login',
+          query: redirect ? { redirect } : {}
+        }).catch(() => {})
+      }
+    })
+    .then(() => {
+      window.setTimeout(() => {
+        handlingUnauthorized = false
+      }, 1000)
+    })
+}
+
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -48,7 +84,7 @@ service.interceptors.response.use(
     const newToken = response.headers['authorization'] // 获取新的 Token
     if (newToken) {
       setToken(newToken) // 存储新的 Token
-      store.commit('SET_TOKEN', newToken) // 如果 store 中有设置 Token 的 mutation，也更新一下
+      store.commit('user/SET_TOKEN', newToken) // 同步更新当前标签页的 Vuex Token
     }
 
     if (res.code !== 1) {
@@ -67,18 +103,7 @@ service.interceptors.response.use(
     if (error.response) {
       switch (error.response.status) {
         case 401:
-          // 清除token
-          store.dispatch('user/resetToken')
-          // 跳转登录页
-          router.replace({
-            path: '/login',
-            query: { redirect: router.currentRoute.fullPath }
-          })
-          Message({
-            message: '登录已过期，请重新登录',
-            type: 'error',
-            duration: 5 * 1000
-          })
+          handleUnauthorized()
           break
         case 403:
           Message({
@@ -111,40 +136,5 @@ service.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-
-// 错误处理函数
-function handleErrorResponse(status, message) {
-  switch (status) {
-    case 401:
-      Message({
-        message: message,
-        type: 'error',
-        duration: 5 * 1000
-      })
-      // window.location.href = "https://www.example.com"
-      router.push({ path: 'login' })
-      break
-    case 403:
-      Message({
-        message: message,
-        type: 'error',
-        duration: 5 * 1000
-      })
-      break
-    case 404:
-      Message({
-        message: message,
-        type: 'error',
-        duration: 5 * 1000
-      })
-      break
-    default:
-      Message({
-        message: message || '发生未知错误',
-        type: 'error',
-        duration: 5 * 1000
-      })
-  }
-}
 
 export default service

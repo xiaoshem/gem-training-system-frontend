@@ -247,7 +247,7 @@ export default {
     }
   },
   created() {
-    this.examId = localStorage.getItem('examId')
+    this.examId = sessionStorage.getItem('examId')
     this.paperId = this.examId
     this.startExam(this.examId)
     this.fetchData(this.examId)
@@ -718,7 +718,7 @@ export default {
 
       // 获得详情
       this.cardItem = item
-      const examId = localStorage.getItem('examId')
+      const examId = sessionStorage.getItem('examId')
       // 查找下个详情
       const params = { examId: examId, questionId: item.questionId }
 

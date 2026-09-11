@@ -76,7 +76,7 @@ export default {
     }
   },
   created() {
-    this.examId = localStorage.getItem('answer_examId')
+    this.examId = sessionStorage.getItem('answer_examId')
     this.getAnswerUserPage(
       this.pageNum,
       this.pageSize,

@@ -356,7 +356,7 @@ export default {
         })
     },
     showExam(row) {
-      localStorage.setItem("exam-details-examId", row.id)
+      sessionStorage.setItem("exam-details-examId", row.id)
       this.$router.push({name: 'exam-details'})
     },
     updateExam() {

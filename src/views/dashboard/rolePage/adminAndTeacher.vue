@@ -140,6 +140,8 @@ export default {
     // 获取所有数据
     async fetchAllData() {
       this.loading = true
+      this.error = false
+      this.errorMessage = ''
       try {
         // 获取总数统计
         const res0 = await classAllCounts()

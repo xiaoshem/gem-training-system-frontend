@@ -23,7 +23,7 @@ export default {
   },
   created() {
     // this.url = this.$route.query.url;
-    const roles = localStorage.getItem('roles')
+    const roles = sessionStorage.getItem('roles')
     switch (roles) {
       case 'admin': {
         this.url = 0

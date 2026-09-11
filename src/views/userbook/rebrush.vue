@@ -135,8 +135,12 @@
             <!-- <el-button type="primary" @click="handPrevious()">
               上一题
             </el-button> -->
-            <el-button type="warning" icon="el-icon-right" @click="handNext()">
-              下一题
+            <el-button
+              type="warning"
+              :icon="flag ? (index >= lastIndex - 1 ? 'el-icon-check' : 'el-icon-right') : 'el-icon-check'"
+              @click="handNext()"
+            >
+              {{ flag ? (index >= lastIndex - 1 ? '完成重刷' : '下一题') : '提交答案' }}
             </el-button>
           </div>
         </el-card>
@@ -190,7 +194,7 @@ export default {
   },
   created() {
     this.routeData = this.$route.query.zhi;
-    this.examId = localStorage.getItem("userbook_examId");
+    this.examId = sessionStorage.getItem("userbook_examId");
     this.getUserBookListFun();
     // this.getSingleQuFun()
   },
@@ -283,80 +287,92 @@ export default {
      */
     handNext() {
       if (!this.flag) {
-        this.index = this.index + 1;
-        this.handSave(this.index);
-      } else {
-        if (this.index >= this.lastIndex) {
-          this.handHandExam();
-        }
-        this.handSave(this.index);
+        // 第一次点击只提交当前题，题号和题目内容保持不变，用于展示答案和解析。
+        this.handSave();
+        return;
       }
+
+      // 当前题已经提交；最后一题结束重刷，其余情况再进入下一题。
+      if (this.index >= this.lastIndex - 1) {
+        this.handHandExam();
+        return;
+      }
+
+      this.index += 1;
+      this.flag = false;
+      this.failQuData = {};
+      this.radioValue = "";
+      this.multiValue = [];
+      this.saqTextarea = "";
+      this.fetchQuData(this.index);
     },
 
     /**
      * 上一题
      */
     handPrevious() {
-      this.index = this.index - 1;
-      this.handSave(this.index);
+      if (this.index <= 0) {
+        return;
+      }
+      this.index -= 1;
+      this.flag = false;
+      this.failQuData = {};
+      this.radioValue = "";
+      this.multiValue = [];
+      this.saqTextarea = "";
+      this.fetchQuData(this.index);
     },
     // 保存答案
-    handSave(index) {
-      if (index - 1 >= this.lastIndex) {
-        this.handHandExam();
-      } else {
-        let answer;
-        if (this.quData.quType === 2) {
-          // 多选题
-          answer = this.multiValue.join(",");
-        } else if (this.quData.quType === 1 || this.quData.quType === 3) {
-          // 单选题或判断题
-          answer = this.radioValue;
-        } else if (this.quData.quType === 4) {
-          // 简答题
-          answer = this.saqTextarea;
-        }
+    handSave() {
+      let answer;
+      if (this.quData.quType === 2) {
+        // 多选题
+        answer = this.multiValue.join(",");
+      } else if (this.quData.quType === 1 || this.quData.quType === 3) {
+        // 单选题或判断题
+        answer = this.radioValue;
+      } else if (this.quData.quType === 4) {
+        // 简答题
+        answer = this.saqTextarea;
+      }
 
-        const params = {
-          examId: this.examId,
-          quId: this.userBookList[index - 1]["quId"],
-          answer: answer,
-        };
+      const currentQuestion = this.userBookList[this.index];
+      if (!currentQuestion) {
+        this.$message({
+          type: "error",
+          message: "当前错题不存在，请返回错题本后重试",
+        });
+        return;
+      }
 
-        // this.myAnswers = params.answer;
-        if (!this.flag) {
-          fullBook(params).then((res) => {
-            if (res.code) {
-              this.failQuData = res.data;
-              if (res.data.correct) {
-                this.$message({
-                  type: "success",
-                  message: res.msg,
-                });
-              } else {
-                this.$message({
-                  type: "error",
-                  message: res.msg,
-                });
-              }
-            } else {
-              this.$message({
-                type: "error",
-                message: res.msg,
-              });
-            }
+      const params = {
+        examId: this.examId,
+        quId: currentQuestion.quId,
+        answer: answer,
+      };
+
+      fullBook(params).then((res) => {
+        if (res.code && res.data) {
+          this.failQuData = res.data;
+          this.flag = true;
+          if (res.data.correct) {
+            this.$message({
+              type: "success",
+              message: res.msg,
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: res.msg,
+            });
+          }
+        } else {
+          this.$message({
+            type: res.code ? "warning" : "error",
+            message: res.msg,
           });
         }
-
-        if (this.flag === true) {
-          // 查找详情
-          this.fetchQuData(index);
-          this.flag = false;
-        } else {
-          this.flag = true;
-        }
-      }
-      // });
+      });
     },
     // 试卷详情
     fetchQuData(index) {
