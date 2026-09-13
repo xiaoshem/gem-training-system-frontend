@@ -47,6 +47,20 @@ export const constantRoutes = [
     component: () => import('@/views/login/register'),
     hidden: true
   },
+  {
+    path: '/training',
+    name: 'public-training',
+    component: () => import('@/views/training/catalog/index'),
+    meta: { title: '培训公开浏览', public: true },
+    hidden: true
+  },
+  {
+    path: '/training/:id',
+    name: 'public-training-detail',
+    component: () => import('@/views/training/catalog/detail'),
+    meta: { title: '培训详情', public: true },
+    hidden: true
+  },
 
   {
     path: '/',
@@ -101,6 +115,76 @@ export const constantRoutes = [
       name: 'class-management',
       component: () => import('@/views/class/index'),
       meta: { title: '班级管理', visible: true, roles: ['teacher', 'admin'], icon: 'el-icon-takeaway-box' }
+    }]
+  },
+  {
+    path: '/training-management',
+    component: Layout,
+    redirect: '/course-management',
+    name: 'training-management',
+    alwaysShow: true,
+    meta: { title: '培训管理', visible: true, roles: ['admin'], icon: 'el-icon-reading' },
+    children: [
+      {
+        path: '/course-management',
+        name: 'course-management',
+        component: () => import('@/views/training/course/index'),
+        meta: { title: '课程管理', visible: true, roles: ['admin'], icon: 'el-icon-collection' }
+      },
+      {
+        path: '/instructor-management',
+        name: 'instructor-management',
+        component: () => import('@/views/training/instructor/index'),
+        meta: { title: '讲师档案', visible: true, roles: ['admin'], icon: 'el-icon-user-solid' }
+      },
+      {
+        path: '/training-class-management',
+        name: 'training-class-management',
+        component: () => import('@/views/training/class/index'),
+        meta: { title: '培训班次', visible: true, roles: ['admin'], icon: 'el-icon-date' }
+      }
+    ]
+  },
+  {
+    path: '/teaching-classes',
+    component: Layout,
+    children: [{
+      path: '/teaching-classes',
+      name: 'teaching-classes',
+      component: () => import('@/views/training/class/index'),
+      meta: { title: '我的授课', visible: true, roles: ['teacher'], icon: 'el-icon-s-custom' }
+    }]
+  },
+  {
+    path: '/training-sessions',
+    component: Layout,
+    children: [{
+      path: '/training-sessions',
+      name: 'training-sessions',
+      hidden: true,
+      component: () => import('@/views/training/session/index'),
+      meta: { title: '课次安排', visible: true, roles: ['admin', 'teacher'], icon: 'el-icon-time' }
+    }]
+  },
+  {
+    path: '/training-catalog',
+    component: Layout,
+    children: [{
+      path: '/training-catalog',
+      name: 'training-catalog',
+      component: () => import('@/views/training/catalog/index'),
+      meta: { title: '培训报名', visible: true, roles: ['student'], icon: 'el-icon-school' }
+    }]
+  },
+  {
+    path: '/training-detail',
+    component: Layout,
+    children: [{
+      path: '/training-detail',
+      name: 'training-detail',
+      hidden: true,
+      component: () => import('@/views/training/catalog/detail'),
+      meta: { title: '培训详情', visible: true, roles: ['student'], icon: 'el-icon-document' }
     }]
   },
   {
