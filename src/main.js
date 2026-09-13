@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // 定义白名单
 Vue.prototype.$echarts = echarts
-const whiteList = ['/login', '/register']
+const whiteList = ['/login', '/register', '/training']
 
 // 判断是否有token，如果有token，则允许访问，否则跳转到登录页面
 router.beforeEach((to, from, next) => {
@@ -48,7 +48,7 @@ router.beforeEach((to, from, next) => {
   const token = getToken('Authorization')
 
   // 检查当前访问的路由是否在白名单内
-  if (whiteList.includes(to.path)) {
+  if (whiteList.includes(to.path) || to.path.startsWith('/training/')) {
     // 如果在白名单内，不需要token，直接允许访问
     next()
   } else {
@@ -67,7 +67,7 @@ router.beforeEach((to, from, next) => {
 router.beforeEach((to, from, next) => {
   const isLoginOrRegister = ['login', 'register'].includes(to.name)
   // 页面加载时 不是登录页或注册页 尝试重新连接
-  if (!isLoginOrRegister) {
+  if (!isLoginOrRegister && !(to.meta && to.meta.public)) {
     connectWebSocket()
   }
   next()

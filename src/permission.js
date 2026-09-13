@@ -25,7 +25,7 @@ router.beforeEach(async(to, from, next) => {
     return
   }
 
-  if (!['/login', '/register', '/'].includes(to.path)) {
+  if (!['/login', '/register', '/training', '/'].includes(to.path) && !(to.meta && to.meta.public)) {
     store.commit('menu/ADD_TAG', {
       path: to.path,
       checked: false,

@@ -81,15 +81,15 @@
         >
       </div>
       <div
-        v-if="enableRegister"
         style="
           display: flex;
           align-items: center;
-          justify-content: flex-end;
+          justify-content: space-between;
           margin-bottom: 20px;
         "
       >
-        <router-link style="color: #66b1ff" to="/register"> 立即注册 </router-link>
+        <router-link style="color: #66b1ff" to="/training"> 浏览培训 </router-link>
+        <router-link v-if="enableRegister" style="color: #66b1ff" to="/register"> 立即注册 </router-link>
       </div>
       <el-form-item>
         <el-button
