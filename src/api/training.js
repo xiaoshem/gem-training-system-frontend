@@ -111,3 +111,59 @@ export function updateTrainingSession(id, data) {
 export function deleteTrainingSession(id) {
   return request({ url: `training-sessions/${id}`, method: 'delete' })
 }
+
+export function submitEnrollment(data) {
+  return request({ url: 'enrollments', method: 'post', data })
+}
+
+export function getMyEnrollmentByClass(trainingClassId) {
+  return request({ url: `enrollments/mine/class/${trainingClassId}`, method: 'get' })
+}
+
+export function getMyEnrollments(params) {
+  return request({ url: 'enrollments/mine/paging', method: 'get', params })
+}
+
+export function getEnrollmentManagementPage(params) {
+  return request({ url: 'enrollments/manage/paging', method: 'get', params })
+}
+
+export function admitEnrollment(id, data = {}) {
+  return request({ url: `enrollments/${id}/admit`, method: 'put', data })
+}
+
+export function rejectEnrollment(id, data) {
+  return request({ url: `enrollments/${id}/reject`, method: 'put', data })
+}
+
+export function cancelEnrollment(id) {
+  return request({ url: `enrollments/${id}/cancel`, method: 'put' })
+}
+
+export function getMyPaymentOrders(params) {
+  return request({ url: 'payment-orders/mine/paging', method: 'get', params })
+}
+
+export function getPaymentManagementPage(params) {
+  return request({ url: 'payment-orders/manage/paging', method: 'get', params })
+}
+
+export function payPaymentOrder(id) {
+  return request({ url: `payment-orders/${id}/pay`, method: 'put' })
+}
+
+export function getMyMessages(params) {
+  return request({ url: 'user-messages/paging', method: 'get', params })
+}
+
+export function getUnreadMessageCount() {
+  return request({ url: 'user-messages/unread-count', method: 'get' })
+}
+
+export function readMessage(id) {
+  return request({ url: `user-messages/${id}/read`, method: 'put' })
+}
+
+export function readAllMessages() {
+  return request({ url: 'user-messages/read-all', method: 'put' })
+}
