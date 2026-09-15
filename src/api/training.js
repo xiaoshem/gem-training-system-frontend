@@ -152,6 +152,18 @@ export function payPaymentOrder(id) {
   return request({ url: `payment-orders/${id}/pay`, method: 'put' })
 }
 
+export function getPaymentCapabilities() {
+  return request({ url: 'payment-orders/capabilities', method: 'get' })
+}
+
+export function createAlipayPagePay(id) {
+  return request({ url: `payment-orders/${id}/alipay/page-pay`, method: 'post' })
+}
+
+export function queryAlipayPayment(orderNo) {
+  return request({ url: `payment-orders/alipay/query/${encodeURIComponent(orderNo)}`, method: 'post' })
+}
+
 export function getMyMessages(params) {
   return request({ url: 'user-messages/paging', method: 'get', params })
 }

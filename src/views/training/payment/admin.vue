@@ -1,6 +1,6 @@
 <template>
   <div class="app-container page-shell">
-    <div class="page-heading"><h2>缴费记录</h2><p>查询录取后生成的缴费订单和模拟支付流水。</p></div>
+    <div class="page-heading"><h2>缴费记录</h2><p>查询录取后生成的缴费订单及本地模拟、支付宝沙箱支付流水。</p></div>
     <el-card shadow="never" class="filter-card">
       <el-form :inline="true">
         <el-form-item label="关键词"><el-input v-model="query.keyword" clearable placeholder="学员、订单号或班次" @keyup.enter.native="search" /></el-form-item>
@@ -16,6 +16,7 @@
       <el-table-column prop="courseName" label="课程" min-width="150" show-overflow-tooltip />
       <el-table-column label="金额" width="100" align="right"><template slot-scope="scope">¥{{ scope.row.amount }}</template></el-table-column>
       <el-table-column label="状态" width="100" align="center"><template slot-scope="scope"><el-tag :type="statusType(scope.row.status)">{{ statusLabel(scope.row.status) }}</el-tag></template></el-table-column>
+      <el-table-column label="支付方式" width="130" align="center"><template slot-scope="scope">{{ channelLabel(scope.row.paymentChannel) }}</template></el-table-column>
       <el-table-column prop="transactionNo" label="交易流水号" min-width="160" />
       <el-table-column prop="paidAt" label="支付时间" width="165" />
       <el-table-column prop="createTime" label="生成时间" width="165" />
@@ -34,7 +35,7 @@ export default {
   methods: {
     async loadData() { this.loading = true; try { const res = await getPaymentManagementPage(this.query); this.page = res.data || { records: [], total: 0 } } finally { this.loading = false } },
     search() { this.query.pageNum = 1; this.loadData() }, reset() { this.query = { pageNum: 1, pageSize: 10, keyword: '', status: '' }; this.loadData() }, changePage(value) { this.query.pageNum = value; this.loadData() },
-    statusLabel(value) { return { UNPAID: '待缴费', PAID: '已缴费', CANCELLED: '已关闭', REFUNDED: '已退款' }[value] || value }, statusType(value) { return { UNPAID: 'warning', PAID: 'success', CANCELLED: 'info', REFUNDED: '' }[value] || 'info' }
+    statusLabel(value) { return { UNPAID: '待缴费', PAID: '已缴费', CANCELLED: '已关闭', REFUNDED: '已退款' }[value] || value }, statusType(value) { return { UNPAID: 'warning', PAID: 'success', CANCELLED: 'info', REFUNDED: '' }[value] || 'info' }, channelLabel(value) { return { SIMULATED: '本地模拟', ALIPAY_SANDBOX: '支付宝沙箱' }[value] || '-' }
   }
 }
 </script>

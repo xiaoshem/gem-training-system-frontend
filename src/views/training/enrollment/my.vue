@@ -26,7 +26,7 @@
       <el-table-column prop="createTime" label="报名时间" width="165" />
       <el-table-column label="操作" width="150" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.status === 'ADMITTED' && scope.row.paymentStatus === 'UNPAID'" type="text" class="success-text" @click="pay(scope.row)">模拟缴费</el-button>
+          <el-button v-if="scope.row.status === 'ADMITTED' && scope.row.paymentStatus === 'UNPAID'" type="text" class="success-text" @click="goToPayment">去缴费</el-button>
           <el-button v-if="canCancel(scope.row)" type="text" class="danger-text" @click="cancel(scope.row)">取消报名</el-button>
         </template>
       </el-table-column>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { cancelEnrollment, getMyEnrollments, payPaymentOrder } from '@/api/training'
+import { cancelEnrollment, getMyEnrollments } from '@/api/training'
 
 export default {
   name: 'MyEnrollments',
@@ -62,7 +62,7 @@ export default {
     paymentLabel(value) { return { UNPAID: '待缴费', PAID: '已缴费', CANCELLED: '已关闭', REFUNDED: '已退款' }[value] || '—' },
     canCancel(row) { return ['PENDING', 'ADMITTED'].includes(row.status) && row.paymentStatus !== 'PAID' && new Date(`${row.startDate}T00:00:00`).getTime() > Date.now() },
     cancel(row) { this.$confirm(`确定取消“${row.className}”的报名吗？`, '提示', { type: 'warning' }).then(() => cancelEnrollment(row.id)).then(() => { this.$message.success('报名已取消'); this.loadData() }).catch(() => undefined) },
-    pay(row) { this.$confirm(`确认模拟支付 ¥${row.paymentAmount} 吗？`, '模拟缴费', { type: 'warning' }).then(() => payPaymentOrder(row.paymentOrderId)).then(() => { this.$message.success('模拟缴费成功'); this.loadData() }).catch(() => undefined) }
+    goToPayment() { this.$router.push('/my-payments') }
   }
 }
 </script>
