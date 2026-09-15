@@ -142,6 +142,18 @@ export const constantRoutes = [
         name: 'training-class-management',
         component: () => import('@/views/training/class/index'),
         meta: { title: '培训班次', visible: true, roles: ['admin'], icon: 'el-icon-date' }
+      },
+      {
+        path: '/enrollment-management',
+        name: 'enrollment-management',
+        component: () => import('@/views/training/enrollment/admin'),
+        meta: { title: '报名审核', visible: true, roles: ['admin'], icon: 'el-icon-s-check' }
+      },
+      {
+        path: '/payment-management',
+        name: 'payment-management',
+        component: () => import('@/views/training/payment/admin'),
+        meta: { title: '缴费记录', visible: true, roles: ['admin'], icon: 'el-icon-money' }
       }
     ]
   },
@@ -185,6 +197,36 @@ export const constantRoutes = [
       hidden: true,
       component: () => import('@/views/training/catalog/detail'),
       meta: { title: '培训详情', visible: true, roles: ['student'], icon: 'el-icon-document' }
+    }]
+  },
+  {
+    path: '/my-enrollments',
+    component: Layout,
+    children: [{
+      path: '/my-enrollments',
+      name: 'my-enrollments',
+      component: () => import('@/views/training/enrollment/my'),
+      meta: { title: '我的报名', visible: true, roles: ['student'], icon: 'el-icon-s-order' }
+    }]
+  },
+  {
+    path: '/my-payments',
+    component: Layout,
+    children: [{
+      path: '/my-payments',
+      name: 'my-payments',
+      component: () => import('@/views/training/payment/my'),
+      meta: { title: '我的缴费', visible: true, roles: ['student'], icon: 'el-icon-wallet' }
+    }]
+  },
+  {
+    path: '/my-messages',
+    component: Layout,
+    children: [{
+      path: '/my-messages',
+      name: 'my-messages',
+      component: () => import('@/views/training/message/index'),
+      meta: { title: '站内消息', visible: true, roles: ['student'], icon: 'el-icon-message' }
     }]
   },
   {
